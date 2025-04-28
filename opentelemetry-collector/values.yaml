@@ -127,8 +127,8 @@ internalTelemetryViaOTLP:
 config:
   exporters:
     debug: {}
-    tempo:
-      endpoint: tempo-distributor.tempo.svc.cluster.local:3100
+    otlp/tempo:
+      endpoint: tempo-distributor.tempo.svc.cluster.local:4317
       tls:
         insecure: true
   
@@ -183,34 +183,34 @@ config:
     extensions:
       - health_check
     pipelines:
-      logs:
-        exporters:
-          - debug
-        processors:
-          - memory_limiter
-          - batch
-        receivers:
-          - otlp
-      metrics:
-        exporters:
-          - debug
-        processors:
-          - memory_limiter
-          - batch
-        receivers:
-          - otlp
-          # if internalTelemetryViaOTLP.metrics.enabled = true, prometheus receiver will be removed
-          - prometheus
+      # logs:
+      #   exporters:
+      #     - debug
+      #   processors:
+      #     - memory_limiter
+      #     - batch
+      #   receivers:
+      #     - otlp
+      # metrics:
+      #   exporters:
+      #     - debug
+      #   processors:
+      #     - memory_limiter
+      #     - batch
+      #   receivers:
+      #     - otlp
+      #     # if internalTelemetryViaOTLP.metrics.enabled = true, prometheus receiver will be removed
+      #     - prometheus
       traces:
         exporters:
-          - tempo
+          - otlp/tempo
         processors:
           - memory_limiter
           - batch
         receivers:
           - otlp
-          - jaeger
-          - zipkin
+          # - jaeger
+          # - zipkin
 
 # Helm currently has an issue (https://github.com/helm/helm/pull/12879) when using null to remove
 # default configuration from a subchart. The result is that you cannot remove default configuration
