@@ -725,17 +725,17 @@ opentelemetry-collector:
         endpoint: otel-collector-opentelemetry-collector.otel:4317
         tls:
           insecure: true
-      # Create an exporter to Prometheus (metrics)
-      otlphttp/prometheus:
-        endpoint: http://prometheus:9090/api/v1/otlp
-        tls:
-          insecure: true
-      opensearch:
-        logs_index: otel
-        http:
-          endpoint: http://opensearch:9200
-          tls:
-            insecure: true
+      # # Create an exporter to Prometheus (metrics)
+      # otlphttp/prometheus:
+      #   endpoint: http://prometheus:9090/api/v1/otlp
+      #   tls:
+      #     insecure: true
+      # opensearch:
+      #   logs_index: otel
+      #   http:
+      #     endpoint: http://opensearch:9200
+      #     tls:
+      #       insecure: true
 
     processors:
       # This processor is used to help limit high cardinality on next.js span names
@@ -762,14 +762,15 @@ opentelemetry-collector:
       pipelines:
         traces:
           processors: [memory_limiter, resource, transform, batch]
-          exporters: [otlp, debug, spanmetrics]
-        metrics:
-          receivers: [httpcheck/frontend-proxy, redis, otlp, spanmetrics]
-          processors: [memory_limiter, resource, batch]
-          exporters: [otlphttp/prometheus, debug]
-        logs:
-          processors: [memory_limiter, resource, batch]
-          exporters: [opensearch, debug]
+          # exporters: [otlp, debug, spanmetrics]
+          exporters: [otlp, debug]
+        # metrics:
+        #   receivers: [httpcheck/frontend-proxy, redis, otlp, spanmetrics]
+        #   processors: [memory_limiter, resource, batch]
+        #   exporters: [otlphttp/prometheus, debug]
+        # logs:
+        #   processors: [memory_limiter, resource, batch]
+        #   exporters: [opensearch, debug]
       telemetry:
         metrics:
           level: detailed
@@ -780,7 +781,7 @@ opentelemetry-collector:
                 exporter:
                   otlp:
                     protocol: grpc
-                    endpoint: otel-collector:4318
+                    endpoint: otel-collector:4317
 
 jaeger:
   enabled: true
